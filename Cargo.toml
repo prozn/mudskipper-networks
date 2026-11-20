@@ -1,0 +1,23 @@
+[package]
+name = "training"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.87"
+license = "GPL-3.0-or-later"
+description = "Trains mudskipper's networks with bullet"
+publish = false
+
+[dependencies]
+# Pinned so that every network in HISTORY.md can be retrained exactly. Changing the rev
+# is a new row's business: record the new SHA in HISTORY.md.
+bullet = { git = "https://github.com/jw1912/bullet", rev = "5d70177680437b7c0ddf958bd4722d95afa78b0c", package = "bullet_lib" }
+
+[features]
+# Training needs a GPU backend: without one bullet falls back to a mock device.
+cuda = ["bullet/cuda"]
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }

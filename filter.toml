@@ -1,0 +1,3 @@
+# Passed to `bullet-utils viribinpack splat`. A wrong path silently disables filtering.
+# Fields left out keep viriformat's defaults: min_pieces 4, no noisy best move, not in check.
+min_ply = 16
