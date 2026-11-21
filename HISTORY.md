@@ -1,6 +1,10 @@
 # Network history
 
-One row per network, added when its release is published. The SPRT column is filled in once its SPRT finishes. **Positions** counts positions kept after filtering (the size of the shuffled file ÷ 32). **WDL blend** is the weight of the game result in the training target.
+One row per network, added when its release is published. The SPRT column is filled in once its SPRT finishes. **Positions** counts positions kept after filtering (the size of the shuffled file ÷ 32). **Stored/s** is datagen's measured rate of positions written, across all threads. **Kept** is the share of stored positions that survive `filter.toml`. **WDL blend** is the weight of the game result in the training target. **Eval scale** is `EVAL_SCALE`, which mudskipper's `SCALE` must match.
 
-| Name | Generation | Positions | Hidden | WDL blend | bullet SHA | Config | SPRT |
-|---|---|---|---|---|---|---|---|
+| Name | Generation | Positions | Stored/s | Kept | Hidden | WDL blend | Eval scale | bullet SHA | Config | SPRT |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `pilot-128` | Pilot | 21,238,495 | 3,580 | 69.1% | 128 | 0.40 | 143 | [`5d70177`](https://github.com/jw1912/bullet/tree/5d70177680437b7c0ddf958bd4722d95afa78b0c) | [`pilot-128-wdl40.rs`](https://github.com/prozn/mudskipper-networks/blob/1db59cb/src/bin/pilot-128-wdl40.rs) at `1db59cb` | +394.88 ± 68.23 against PeSTO (mudskipper 0.12.6), STC 8+0.08 [0, 10], 166 games |
+| `pilot-128-wdl75` | Pilot | 21,238,495 | 3,580 | 69.1% | 128 | 0.75 | 143 | [`5d70177`](https://github.com/jw1912/bullet/tree/5d70177680437b7c0ddf958bd4722d95afa78b0c) | [`pilot-128-wdl75.rs`](https://github.com/prozn/mudskipper-networks/blob/1db59cb/src/bin/pilot-128-wdl75.rs) at `1db59cb` | +213.66 ± 48.05 against PeSTO (mudskipper 0.12.6), STC 8+0.08 [0, 10], 210 games |
+
+**Pilot.** Datagen with mudskipper's PeSTO engine at a 10,000 soft-node limit played 225,000 games and stored 30,753,835 positions. Both pilots trained on the same 21,238,495 positions kept from those. They were first trained at eval scale 400, then retrained at 143, the K that `examples/fit-eval-scale.rs` fits to this data. Only the 143 networks are published. The WDL 0.40 run won the A/B and is published as `pilot-128`; it is the same file as the `pilot-128-wdl40` pre-release.
