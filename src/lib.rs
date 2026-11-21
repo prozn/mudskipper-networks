@@ -22,7 +22,7 @@ const BATCH_SIZE: usize = 16_384;
 
 /// Maps the output to centipawns: the network learns `cp / EVAL_SCALE`, and mudskipper
 /// multiplies by the same value (its `SCALE`). Changing it means changing the engine.
-const EVAL_SCALE: f32 = 400.0;
+const EVAL_SCALE: f32 = 240.0;
 
 /// Inputs per perspective: 2 colours × 6 piece types × 64 squares.
 const INPUTS: usize = 768;
