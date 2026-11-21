@@ -1,19 +1,16 @@
-//! Generation 1: 100M positions, about 40 passes.
+//! Generation 1: 100M positions, about 40 passes. WDL blend 0.40, from the pilot that
+//! won its SPRT: pilot-128-wdl40 gained +394.88 against PeSTO, pilot-128-wdl75 +213.66.
 
 use training::Config;
 
-/// The blend of the pilot run that won its SPRT. Unset until the pilot is decided (#81).
-const PILOT_WINNER_WDL: Option<f32> = None;
-
 fn main() {
-    let wdl = PILOT_WINNER_WDL.expect("set PILOT_WINNER_WDL to the winning pilot's blend first");
     Config {
         name: "gen1-256",
         hidden: 256,
         dataset: "data/gen1.shuffled.bin",
         superbatches: 40,
         batches_per_superbatch: 6104,
-        wdl,
+        wdl: 0.40,
     }
     .train();
 }
