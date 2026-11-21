@@ -10,6 +10,7 @@ Each network is a `(768 → N)x2 → 1` perspective network with SCReLU, trained
 |---|---|
 | `src/lib.rs` | The shared architecture, quantisation and schedule, from bullet's `examples/progression/1_simple.rs` |
 | `src/bin/<name>.rs` | One config per network, named after its release |
+| `examples/fit-eval-scale.rs` | Fits `EVAL_SCALE` to a shuffled data file |
 | `filter.toml` | The position filter for `splat` |
 | `HISTORY.md` | One row per network |
 
@@ -62,6 +63,18 @@ bullet-utils shuffle -i data/gen1.bin -o data/gen1.shuffled.bin -m 8192
 ```text
 bullet-utils interleave data/gen1.shuffled.bin data/gen2.shuffled.bin -o data/gen2-all.shuffled.bin
 ```
+
+## Fit the eval scale
+
+`EVAL_SCALE` in `src/lib.rs` maps the network's output to centipawns. It should be the K at which `sigmoid(score / K)` best predicts the game results in the training data. At that K the score and result halves of the target agree, and the WDL blend leaves the output scale alone. With a K that is too large, a high WDL blend inflates every evaluation. Fit it on the shuffled file before training:
+
+```text
+cargo run --release --example fit-eval-scale -- data/pilot.shuffled.bin
+```
+
+It reads the score and result of every position and prints the win/draw/loss split. Then it prints the K that minimises bullet's squared-error loss, the log-loss K for comparison, and the loss at a few scales. It takes under a second for 20M positions. An optional second argument leaves out positions whose |score| exceeds it, which shows whether extreme scores move the fit. On the pilot data the fitted K stayed at 143 with any cap.
+
+Use the squared-error K, rounded, as `EVAL_SCALE`. mudskipper's `SCALE` must then be set to the same value, so a change here is also a change to the engine. Refit when the data changes a lot, for example when a new generation's search scores the positions.
 
 ## Train
 
